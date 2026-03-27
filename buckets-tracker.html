@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Buckets">
+<meta name="theme-color" content="#0f0f0f">
+<title>Buckets Tracker</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  :root {
+    --bg: #0f0f0f;
+    --surface: #1a1a1a;
+    --surface2: #242424;
+    --border: #2e2e2e;
+    --text: #f0f0f0;
+    --text2: #888;
+    --text3: #555;
+    --accent: #4f8ef7;
+    --accent-dim: #1e3a6e;
+    --green: #3ecf6a;
+    --green-dim: #0e3320;
+    --red: #f75f5f;
+    --red-dim: #3a1010;
+    --amber: #f59e0b;
+    --amber-dim: #3a2500;
+    --radius: 12px;
+    --radius-sm: 8px;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    max-width: 430px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px 12px;
+    border-bottom: 0.5px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .header-title { font-size: 17px; font-weight: 600; letter-spacing: -0.3px; }
+  .header-sub { font-size: 12px; color: var(--text2); margin-top: 1px; }
+  .queue-badge {
+    background: var(--accent-dim);
+    color: var(--accent);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    cursor: pointer;
+    display: none;
+  }
+  .queue-badge.show { display: block; }
+
+  /* ── Tabs ── */
+  .tabs {
+    display: flex;
+    padding: 12px 20px 0;
+    gap: 4px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .tab {
+    flex: 1;
+    text-align: center;
+    padding: 8px 4px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    cursor: pointer;
+    transition: color 0.15s;
+  }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── Form ── */
+  .form-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 20px 100px;
+  }
+
+  .field { margin-bottom: 14px; }
+  .field-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+    display: block;
+  }
+
+  input, select, textarea {
+    width: 100%;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 16px;
+    padding: 12px 14px;
+    outline: none;
+    appearance: none;
+    -webkit-appearance: none;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent);
+  }
+  input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
+  textarea { resize: none; height: 80px; }
+
+  /* Amount row */
+  .amount-row { display: flex; gap: 8px; }
+  .amount-row .sign-btn {
+    width: 52px;
+    flex-shrink: 0;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text2);
+    font-size: 22px;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+  }
+  .sign-btn.negative { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .sign-btn.positive { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+
+  /* Chip selectors */
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+  .chip {
+    padding: 6px 12px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    background: var(--surface);
+    color: var(--text2);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.12s;
+    white-space: nowrap;
+  }
+  .chip.selected {
+    background: var(--accent-dim);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .chip.selected.expense { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+  .chip.selected.income { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .chip.selected.transfer { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
+
+  /* Quick buckets */
+  .quick-buckets { display: flex; flex-wrap: wrap; gap: 6px; }
+
+  /* ── Bottom submit bar ── */
+  .submit-bar {
+    position: fixed;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    max-width: 430px;
+    padding: 12px 20px 28px;
+    background: var(--bg);
+    border-top: 0.5px solid var(--border);
+  }
+  .submit-btn {
+    width: 100%;
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: var(--radius);
+    font-size: 16px;
+    font-weight: 600;
+    padding: 15px;
+    cursor: pointer;
+    transition: opacity 0.15s, transform 0.1s;
+    font-family: inherit;
+  }
+  .submit-btn:active { transform: scale(0.98); opacity: 0.85; }
+  .submit-btn:disabled { opacity: 0.4; cursor: default; }
+
+  /* ── Queue tab ── */
+  .queue-list { display: flex; flex-direction: column; gap: 10px; }
+  .queue-item {
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    padding: 12px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .queue-item-info { flex: 1; min-width: 0; }
+  .queue-item-top { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+  .queue-item-payee { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .queue-item-amount { font-size: 15px; font-weight: 600; flex-shrink: 0; }
+  .queue-item-amount.neg { color: var(--red); }
+  .queue-item-amount.pos { color: var(--green); }
+  .queue-item-bottom { font-size: 12px; color: var(--text2); margin-top: 2px; }
+  .queue-delete {
+    background: none;
+    border: none;
+    color: var(--text3);
+    font-size: 18px;
+    cursor: pointer;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+  .queue-actions { display: flex; gap: 10px; margin-top: 16px; }
+  .queue-actions button {
+    flex: 1;
+    padding: 13px;
+    border-radius: var(--radius);
+    border: none;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .btn-sync { background: var(--accent); color: #fff; }
+  .btn-clear { background: var(--surface2); color: var(--text2); }
+
+  /* ── Settings tab ── */
+  .settings-section { margin-bottom: 24px; }
+  .settings-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text2);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .settings-info {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.6;
+    background: var(--surface);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    margin-bottom: 10px;
+  }
+  .settings-info code {
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    font-size: 11px;
+    background: var(--surface2);
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: var(--accent);
+    word-break: break-all;
+  }
+  .copy-btn {
+    width: 100%;
+    padding: 11px;
+    background: var(--surface2);
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+  }
+  .copy-btn:active { background: var(--accent-dim); }
+
+  /* ── Toast ── */
+  .toast {
+    position: fixed;
+    bottom: 90px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--surface2);
+    color: var(--text);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 20px;
+    border: 0.5px solid var(--border);
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    pointer-events: none;
+    white-space: nowrap;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { background: var(--green-dim); border-color: var(--green); color: var(--green); }
+  .toast.error { background: var(--red-dim); border-color: var(--red); color: var(--red); }
+
+  /* ── Empty state ── */
+  .empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text3);
+  }
+  .empty-icon { font-size: 40px; margin-bottom: 12px; }
+  .empty-text { font-size: 14px; }
+
+  .divider {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin: 16px 0 8px;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div>
+    <div class="header-title">Buckets</div>
+    <div class="header-sub" id="today-label"></div>
+  </div>
+  <div class="queue-badge" id="queue-badge" onclick="switchTab('queue')"></div>
+</div>
+
+<div class="tabs">
+  <div class="tab active" onclick="switchTab('log')" id="tab-log">Log</div>
+  <div class="tab" onclick="switchTab('queue')" id="tab-queue">Queue</div>
+  <div class="tab" onclick="switchTab('settings')" id="tab-settings">Settings</div>
+</div>
+
+<!-- ══ LOG TAB ══ -->
+<div class="form-body" id="pane-log">
+
+  <div class="field">
+    <label class="field-label">Date</label>
+    <input type="date" id="f-date">
+  </div>
+
+  <div class="field">
+    <label class="field-label">Type</label>
+    <div class="chips" id="type-chips">
+      <div class="chip" data-val="Expense" onclick="selectType(this)">Expense</div>
+      <div class="chip" data-val="Income" onclick="selectType(this)">Income</div>
+      <div class="chip" data-val="Debt Purchase" onclick="selectType(this)">Debt Purchase</div>
+      <div class="chip" data-val="Debt Payment" onclick="selectType(this)">Debt Payment</div>
+      <div class="chip" data-val="Transfer" onclick="selectType(this)">Transfer</div>
+      <div class="chip" data-val="Savings" onclick="selectType(this)">Savings</div>
+      <div class="chip" data-val="Investment" onclick="selectType(this)">Investment</div>
+      <div class="chip" data-val="Balance Correction" onclick="selectType(this)">Balance Correction</div>
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Account</label>
+    <select id="f-account">
+      <option value="">Select account…</option>
+      <option>Main Checking</option>
+      <option>PNC Savings</option>
+      <option>Venmo</option>
+      <option>LCTCU Savings</option>
+      <option>Holding Account</option>
+      <option>Cash App Savings</option>
+      <option>Robinhood Account</option>
+      <option>Discover Credit Card</option>
+      <option>CITI Credit Card</option>
+      <option>Amazon Store Card</option>
+      <option>Best Egg Loan</option>
+      <option>NWSCC Retirement</option>
+      <option>Waterloo Bank</option>
+      <option>Capital One</option>
+      <option>Cash</option>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Bucket</label>
+    <div class="divider">Quick pick</div>
+    <div class="quick-buckets" id="quick-buckets">
+      <div class="chip" data-val="Eating Out" onclick="selectBucket(this)">Eating Out</div>
+      <div class="chip" data-val="Gas" onclick="selectBucket(this)">Gas</div>
+      <div class="chip" data-val="Groceries" onclick="selectBucket(this)">Groceries</div>
+      <div class="chip" data-val="Drink/Coke" onclick="selectBucket(this)">Drink/Coke</div>
+      <div class="chip" data-val="Fun" onclick="selectBucket(this)">Fun</div>
+      <div class="chip" data-val="Bills" onclick="selectBucket(this)">Bills</div>
+      <div class="chip" data-val="Car" onclick="selectBucket(this)">Car</div>
+      <div class="chip" data-val="Transfer" onclick="selectBucket(this)">Transfer</div>
+      <div class="chip" data-val="Stuff with Loren" onclick="selectBucket(this)">Stuff with Loren</div>
+      <div class="chip" data-val="Eating out with Loren" onclick="selectBucket(this)">w/ Loren (eat)</div>
+    </div>
+    <div class="divider" style="margin-top:12px;">All buckets</div>
+    <select id="f-bucket" onchange="syncBucketFromSelect(this)">
+      <option value="">Select bucket…</option>
+      <optgroup label="Spending">
+        <option>Eating Out</option>
+        <option>Gas</option>
+        <option>Groceries</option>
+        <option>Bills</option>
+        <option>Fun</option>
+        <option>Health</option>
+        <option>Misc</option>
+        <option>Electronics</option>
+        <option>Home</option>
+        <option>Car</option>
+        <option>Subscriptions</option>
+        <option>Drink/Coke</option>
+        <option>Snacks for home</option>
+        <option>Stuff with Loren</option>
+        <option>Stuff for Loren</option>
+        <option>Eating out with Loren</option>
+        <option>Gifts</option>
+        <option>Other</option>
+      </optgroup>
+      <optgroup label="Income">
+        <option>Paycheck - NWSCC</option>
+        <option>Robotics</option>
+        <option>Side Work</option>
+        <option>Cash</option>
+      </optgroup>
+      <optgroup label="Savings">
+        <option>Emergency Fund</option>
+        <option>House Fund</option>
+        <option>Ring Fund</option>
+        <option>Regular Savings</option>
+        <option>Car Fund</option>
+        <option>Other Savings</option>
+      </optgroup>
+      <optgroup label="Investments">
+        <option>ETF</option>
+        <option>Roth IRA</option>
+        <option>Other Retirement</option>
+        <option>401k/403b</option>
+        <option>Crypto</option>
+        <option>Other Investments</option>
+      </optgroup>
+      <optgroup label="Debt">
+        <option>Discover Credit Card</option>
+        <option>CITI Credit Card</option>
+        <option>Amazon Store Card</option>
+        <option>Best Egg Loan</option>
+        <option>Personal Loan</option>
+        <option>Student Loan</option>
+        <option>Other Debt</option>
+      </optgroup>
+      <optgroup label="Other">
+        <option>Transfer</option>
+        <option>Balance Correction</option>
+      </optgroup>
+    </select>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Payee / Name</label>
+    <input type="text" id="f-payee" placeholder="e.g. Slim Chickens" autocomplete="off" autocorrect="off">
+  </div>
+
+  <div class="field">
+    <label class="field-label">Amount</label>
+    <div class="amount-row">
+      <button class="sign-btn negative" id="sign-btn" onclick="toggleSign()">−</button>
+      <input type="number" id="f-amount" placeholder="0.00" step="0.01" min="0" inputmode="decimal" style="flex:1;">
+    </div>
+  </div>
+
+  <div class="field">
+    <label class="field-label">Notes <span style="color:var(--text3); font-weight:400; text-transform:none; letter-spacing:0;">(optional)</span></label>
+    <textarea id="f-notes" placeholder="Any details…"></textarea>
+  </div>
+
+</div>
+
+<!-- ══ QUEUE TAB ══ -->
+<div class="form-body" id="pane-queue" style="display:none;">
+  <div id="queue-list-container"></div>
+</div>
+
+<!-- ══ SETTINGS TAB ══ -->
+<div class="form-body" id="pane-settings" style="display:none;">
+
+  <div class="settings-section">
+    <span class="settings-label">Google Sheets setup</span>
+    <div class="settings-info">
+      This app queues transactions on your phone and syncs them to your Google Sheet via a Google Apps Script web app URL. It takes about 5 minutes to set up once.<br><br>
+      Steps:<br>
+      1. Open your Google Sheet<br>
+      2. Go to <strong>Extensions → Apps Script</strong><br>
+      3. Paste the script below and click <strong>Deploy → New deployment</strong><br>
+      4. Choose <strong>Web app</strong>, set access to <strong>Anyone</strong><br>
+      5. Copy the web app URL and paste it here
+    </div>
+    <button class="copy-btn" onclick="copyScript()">Copy Apps Script code</button>
+  </div>
+
+  <div class="settings-section" style="margin-top:16px;">
+    <span class="settings-label">Web App URL</span>
+    <input type="url" id="s-url" placeholder="https://script.google.com/macros/s/..." style="margin-bottom:8px;" oninput="saveSettings()">
+    <div class="settings-info" style="font-size:12px;">Paste your deployed Apps Script URL above. Transactions in the queue will POST to this URL and be inserted into your Transactions sheet.</div>
+  </div>
+
+  <div class="settings-section">
+    <span class="settings-label">Default account</span>
+    <select id="s-default-account" onchange="saveSettings()">
+      <option value="">No default</option>
+      <option>Main Checking</option>
+      <option>PNC Savings</option>
+      <option>Venmo</option>
+      <option>LCTCU Savings</option>
+      <option>Holding Account</option>
+      <option>Cash App Savings</option>
+      <option>Robinhood Account</option>
+      <option>Discover Credit Card</option>
+    </select>
+  </div>
+
+  <div class="settings-section">
+    <span class="settings-label">About</span>
+    <div class="settings-info">
+      Buckets Tracker v1.0<br>
+      Entries are stored locally until synced.<br>
+      No data leaves your device until you tap Sync.
+    </div>
+  </div>
+
+</div>
+
+<!-- Submit bar (only shown on log tab) -->
+<div class="submit-bar" id="submit-bar">
+  <button class="submit-btn" id="submit-btn" onclick="submitEntry()">Add to queue</button>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────
+let selectedType = '';
+let selectedBucket = '';
+let isNegative = true;
+let queue = JSON.parse(localStorage.getItem('buckets_queue') || '[]');
+let settings = JSON.parse(localStorage.getItem('buckets_settings') || '{}');
+
+// ── Init ───────────────────────────────────────────────────────────
+window.addEventListener('load', () => {
+  const today = new Date();
+  document.getElementById('f-date').value = today.toISOString().split('T')[0];
+  document.getElementById('today-label').textContent = today.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+
+  if (settings.url) document.getElementById('s-url').value = settings.url;
+  if (settings.defaultAccount) document.getElementById('s-default-account').value = settings.defaultAccount;
+  if (settings.defaultAccount) document.getElementById('f-account').value = settings.defaultAccount;
+
+  updateQueueBadge();
+  selectTypeChip('Expense');
+});
+
+// ── Tab switching ──────────────────────────────────────────────────
+function switchTab(tab) {
+  ['log','queue','settings'].forEach(t => {
+    document.getElementById('pane-' + t).style.display = t === tab ? 'block' : 'none';
+    document.getElementById('tab-' + t).classList.toggle('active', t === tab);
+  });
+  document.getElementById('submit-bar').style.display = tab === 'log' ? 'block' : 'none';
+  if (tab === 'queue') renderQueue();
+  if (tab === 'settings') loadSettings();
+}
+
+// ── Type chips ─────────────────────────────────────────────────────
+function selectType(el) {
+  document.querySelectorAll('#type-chips .chip').forEach(c => {
+    c.classList.remove('selected','expense','income','transfer');
+  });
+  el.classList.add('selected');
+  selectedType = el.dataset.val;
+
+  const colorMap = {
+    'Expense': 'expense', 'Debt Purchase': 'expense',
+    'Income': 'income', 'Savings': 'income', 'Investment': 'income',
+    'Transfer': 'transfer', 'Debt Payment': 'transfer', 'Balance Correction': 'transfer'
+  };
+  if (colorMap[selectedType]) el.classList.add(colorMap[selectedType]);
+
+  // Auto-set sign direction
+  if (['Income'].includes(selectedType)) {
+    isNegative = false;
+    updateSignBtn();
+  } else if (['Expense','Debt Purchase'].includes(selectedType)) {
+    isNegative = true;
+    updateSignBtn();
+  }
+}
+
+function selectTypeChip(val) {
+  const chip = document.querySelector(`#type-chips .chip[data-val="${val}"]`);
+  if (chip) selectType(chip);
+}
+
+// ── Bucket chips ───────────────────────────────────────────────────
+function selectBucket(el) {
+  document.querySelectorAll('#quick-buckets .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedBucket = el.dataset.val;
+  document.getElementById('f-bucket').value = selectedBucket;
+}
+
+function syncBucketFromSelect(sel) {
+  selectedBucket = sel.value;
+  document.querySelectorAll('#quick-buckets .chip').forEach(c => {
+    c.classList.toggle('selected', c.dataset.val === selectedBucket);
+  });
+}
+
+// ── Sign toggle ────────────────────────────────────────────────────
+function toggleSign() {
+  isNegative = !isNegative;
+  updateSignBtn();
+}
+
+function updateSignBtn() {
+  const btn = document.getElementById('sign-btn');
+  btn.textContent = isNegative ? '−' : '+';
+  btn.className = 'sign-btn ' + (isNegative ? 'negative' : 'positive');
+}
+
+// ── Submit ─────────────────────────────────────────────────────────
+function submitEntry() {
+  const date = document.getElementById('f-date').value;
+  const account = document.getElementById('f-account').value;
+  const bucket = selectedBucket || document.getElementById('f-bucket').value;
+  const payee = document.getElementById('f-payee').value.trim();
+  const amtRaw = parseFloat(document.getElementById('f-amount').value);
+  const notes = document.getElementById('f-notes').value.trim();
+
+  if (!date) { showToast('Pick a date', 'error'); return; }
+  if (!selectedType) { showToast('Pick a type', 'error'); return; }
+  if (!account) { showToast('Pick an account', 'error'); return; }
+  if (!bucket) { showToast('Pick a bucket', 'error'); return; }
+  if (isNaN(amtRaw) || amtRaw <= 0) { showToast('Enter an amount', 'error'); return; }
+
+  const amount = isNegative ? -Math.abs(amtRaw) : Math.abs(amtRaw);
+
+  const entry = {
+    id: Date.now(),
+    date,
+    type: selectedType,
+    account,
+    bucket,
+    payee,
+    amount,
+    notes,
+    synced: false
+  };
+
+  queue.push(entry);
+  saveQueue();
+  updateQueueBadge();
+  showToast('Added to queue', 'success');
+
+  // Reset form
+  document.getElementById('f-amount').value = '';
+  document.getElementById('f-payee').value = '';
+  document.getElementById('f-notes').value = '';
+  document.querySelectorAll('#quick-buckets .chip').forEach(c => c.classList.remove('selected'));
+  document.getElementById('f-bucket').value = '';
+  selectedBucket = '';
+
+  // Reset date to today
+  document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
+}
+
+// ── Queue ──────────────────────────────────────────────────────────
+function renderQueue() {
+  const container = document.getElementById('queue-list-container');
+  if (queue.length === 0) {
+    container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No entries queued yet.<br>Log a transaction to get started.</div></div>`;
+    return;
+  }
+
+  const items = queue.slice().reverse().map(e => `
+    <div class="queue-item" id="qi-${e.id}">
+      <div class="queue-item-info">
+        <div class="queue-item-top">
+          <span class="queue-item-payee">${e.payee || e.bucket}</span>
+          <span class="queue-item-amount ${e.amount < 0 ? 'neg' : 'pos'}">${e.amount < 0 ? '-' : '+'}$${Math.abs(e.amount).toFixed(2)}</span>
+        </div>
+        <div class="queue-item-bottom">${e.date} · ${e.account} · ${e.bucket}${e.synced ? ' · ✓ synced' : ''}</div>
+      </div>
+      <button class="queue-delete" onclick="deleteEntry(${e.id})">✕</button>
+    </div>
+  `).join('');
+
+  const total = queue.filter(e => !e.synced).length;
+  container.innerHTML = `
+    <div class="queue-list">${items}</div>
+    ${total > 0 ? `
+    <div class="queue-actions">
+      <button class="btn-sync" onclick="syncQueue()">Sync ${total} to Sheets</button>
+      <button class="btn-clear" onclick="clearSynced()">Clear synced</button>
+    </div>` : `
+    <div class="queue-actions">
+      <button class="btn-clear" style="flex:1;" onclick="clearAll()">Clear all</button>
+    </div>`}
+  `;
+}
+
+function deleteEntry(id) {
+  queue = queue.filter(e => e.id !== id);
+  saveQueue();
+  updateQueueBadge();
+  renderQueue();
+}
+
+function clearSynced() {
+  queue = queue.filter(e => !e.synced);
+  saveQueue();
+  updateQueueBadge();
+  renderQueue();
+}
+
+function clearAll() {
+  if (confirm('Clear all entries?')) {
+    queue = [];
+    saveQueue();
+    updateQueueBadge();
+    renderQueue();
+  }
+}
+
+// ── Sync to Google Sheets ──────────────────────────────────────────
+async function syncQueue() {
+  const url = settings.url;
+  if (!url) {
+    showToast('Add your Apps Script URL in Settings', 'error');
+    switchTab('settings');
+    return;
+  }
+
+  const unsynced = queue.filter(e => !e.synced);
+  if (unsynced.length === 0) { showToast('Nothing to sync', ''); return; }
+
+  showToast('Syncing…', '');
+
+  let success = 0;
+  let failed = 0;
+
+  for (const entry of unsynced) {
+    try {
+      await fetch(url, {
+        method: 'POST',
+        mode: 'no-cors',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          date: entry.date,
+          account: entry.account,
+          type: entry.type,
+          bucket: entry.bucket,
+          payee: entry.payee,
+          amount: entry.amount,
+          notes: entry.notes
+        })
+      });
+      entry.synced = true;
+      success++;
+    } catch(e) {
+      failed++;
+    }
+  }
+
+  saveQueue();
+  renderQueue();
+
+  if (failed === 0) {
+    showToast(`Synced ${success} entries`, 'success');
+  } else {
+    showToast(`${success} synced, ${failed} failed`, 'error');
+  }
+}
+
+// ── Settings ───────────────────────────────────────────────────────
+function saveSettings() {
+  settings.url = document.getElementById('s-url').value.trim();
+  settings.defaultAccount = document.getElementById('s-default-account').value;
+  localStorage.setItem('buckets_settings', JSON.stringify(settings));
+}
+
+function loadSettings() {
+  if (settings.url) document.getElementById('s-url').value = settings.url;
+  if (settings.defaultAccount) document.getElementById('s-default-account').value = settings.defaultAccount;
+}
+
+// ── Apps Script code ───────────────────────────────────────────────
+function copyScript() {
+  const script = `function doPost(e) {
+  try {
+    const data = JSON.parse(e.postData.contents);
+    const ss = SpreadsheetApp.getActiveSpreadsheet();
+    const sheet = ss.getSheetByName('Transactions');
+    
+    const date = new Date(data.date + 'T12:00:00');
+    
+    // Insert at row 3 (top of data, below headers)
+    sheet.insertRowBefore(3);
+    sheet.getRange(3, 1).setValue(date);
+    sheet.getRange(3, 1).setNumberFormat('MM/DD/YYYY');
+    // Col B (Year) and C (Month) are array formulas - leave blank
+    sheet.getRange(3, 4).setValue(data.account);
+    sheet.getRange(3, 5).setValue(data.type);
+    sheet.getRange(3, 6).setValue(data.bucket);
+    sheet.getRange(3, 7).setValue(data.payee);
+    sheet.getRange(3, 8).setValue(data.amount);
+    sheet.getRange(3, 9).setValue(data.notes);
+    
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'ok'}))
+      .setMimeType(ContentService.MimeType.JSON);
+  } catch(err) {
+    return ContentService
+      .createTextOutput(JSON.stringify({status:'error', message:err.toString()}))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+}
+
+function doGet(e) {
+  return ContentService
+    .createTextOutput(JSON.stringify({status:'ok', message:'Buckets Tracker connected'}))
+    .setMimeType(ContentService.MimeType.JSON);
+}`;
+
+  navigator.clipboard.writeText(script).then(() => {
+    showToast('Script copied!', 'success');
+  }).catch(() => {
+    showToast('Copy failed — try long-pressing', 'error');
+  });
+}
+
+// ── Helpers ────────────────────────────────────────────────────────
+function saveQueue() {
+  localStorage.setItem('buckets_queue', JSON.stringify(queue));
+}
+
+function updateQueueBadge() {
+  const unsynced = queue.filter(e => !e.synced).length;
+  const badge = document.getElementById('queue-badge');
+  if (unsynced > 0) {
+    badge.textContent = `${unsynced} pending`;
+    badge.classList.add('show');
+  } else {
+    badge.classList.remove('show');
+  }
+}
+
+function showToast(msg, type = '') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show' + (type ? ' ' + type : '');
+  setTimeout(() => { t.className = 'toast'; }, 2500);
+}
+</script>
+</body>
+</html>
