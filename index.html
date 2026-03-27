@@ -42,7 +42,6 @@
     margin: 0 auto;
   }
 
-  /* ── Header ── */
   .header {
     display: flex;
     align-items: center;
@@ -68,7 +67,6 @@
   }
   .queue-badge.show { display: block; }
 
-  /* ── Tabs ── */
   .tabs {
     display: flex;
     padding: 12px 20px 0;
@@ -88,7 +86,6 @@
   }
   .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
 
-  /* ── Form ── */
   .form-body {
     flex: 1;
     overflow-y: auto;
@@ -120,15 +117,12 @@
     font-family: inherit;
     transition: border-color 0.15s;
   }
-  input:focus, select:focus, textarea:focus {
-    border-color: var(--accent);
-  }
+  input:focus, select:focus, textarea:focus { border-color: var(--accent); }
   input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.6); }
   textarea { resize: none; height: 80px; }
 
-  /* Amount row */
   .amount-row { display: flex; gap: 8px; }
-  .amount-row .sign-btn {
+  .sign-btn {
     width: 52px;
     flex-shrink: 0;
     background: var(--surface);
@@ -146,7 +140,6 @@
   .sign-btn.negative { background: var(--red-dim); border-color: var(--red); color: var(--red); }
   .sign-btn.positive { background: var(--green-dim); border-color: var(--green); color: var(--green); }
 
-  /* Chip selectors */
   .chips { display: flex; flex-wrap: wrap; gap: 6px; }
   .chip {
     padding: 6px 12px;
@@ -159,19 +152,11 @@
     transition: all 0.12s;
     white-space: nowrap;
   }
-  .chip.selected {
-    background: var(--accent-dim);
-    border-color: var(--accent);
-    color: var(--accent);
-  }
+  .chip.selected { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
   .chip.selected.expense { background: var(--red-dim); border-color: var(--red); color: var(--red); }
   .chip.selected.income { background: var(--green-dim); border-color: var(--green); color: var(--green); }
   .chip.selected.transfer { background: var(--amber-dim); border-color: var(--amber); color: var(--amber); }
 
-  /* Quick buckets */
-  .quick-buckets { display: flex; flex-wrap: wrap; gap: 6px; }
-
-  /* ── Bottom submit bar ── */
   .submit-bar {
     position: fixed;
     bottom: 0;
@@ -199,7 +184,6 @@
   .submit-btn:active { transform: scale(0.98); opacity: 0.85; }
   .submit-btn:disabled { opacity: 0.4; cursor: default; }
 
-  /* ── Queue tab ── */
   .queue-list { display: flex; flex-direction: column; gap: 10px; }
   .queue-item {
     background: var(--surface);
@@ -217,75 +201,36 @@
   .queue-item-amount.neg { color: var(--red); }
   .queue-item-amount.pos { color: var(--green); }
   .queue-item-bottom { font-size: 12px; color: var(--text2); margin-top: 2px; }
-  .queue-delete {
-    background: none;
-    border: none;
-    color: var(--text3);
-    font-size: 18px;
-    cursor: pointer;
-    padding: 4px;
-    flex-shrink: 0;
-  }
+  .queue-delete { background: none; border: none; color: var(--text3); font-size: 18px; cursor: pointer; padding: 4px; flex-shrink: 0; }
+
   .queue-actions { display: flex; gap: 10px; margin-top: 16px; }
   .queue-actions button {
-    flex: 1;
-    padding: 13px;
-    border-radius: var(--radius);
-    border: none;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    font-family: inherit;
+    flex: 1; padding: 13px; border-radius: var(--radius);
+    border: none; font-size: 14px; font-weight: 600;
+    cursor: pointer; font-family: inherit;
   }
   .btn-sync { background: var(--accent); color: #fff; }
   .btn-clear { background: var(--surface2); color: var(--text2); }
 
-  /* ── Settings tab ── */
   .settings-section { margin-bottom: 24px; }
   .settings-label {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text2);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    display: block;
+    font-size: 11px; font-weight: 600; color: var(--text2);
+    letter-spacing: 0.06em; text-transform: uppercase;
+    margin-bottom: 8px; display: block;
   }
   .settings-info {
-    font-size: 13px;
-    color: var(--text2);
-    line-height: 1.6;
-    background: var(--surface);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    padding: 12px 14px;
-    margin-bottom: 10px;
-  }
-  .settings-info code {
-    font-family: 'SF Mono', 'Fira Code', monospace;
-    font-size: 11px;
-    background: var(--surface2);
-    padding: 2px 6px;
-    border-radius: 4px;
-    color: var(--accent);
-    word-break: break-all;
+    font-size: 13px; color: var(--text2); line-height: 1.6;
+    background: var(--surface); border: 0.5px solid var(--border);
+    border-radius: var(--radius-sm); padding: 12px 14px; margin-bottom: 10px;
   }
   .copy-btn {
-    width: 100%;
-    padding: 11px;
-    background: var(--surface2);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-sm);
-    color: var(--text);
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    transition: background 0.15s;
+    width: 100%; padding: 11px; background: var(--surface2);
+    border: 0.5px solid var(--border); border-radius: var(--radius-sm);
+    color: var(--text); font-size: 13px; font-weight: 500;
+    cursor: pointer; font-family: inherit; transition: background 0.15s;
   }
   .copy-btn:active { background: var(--accent-dim); }
 
-  /* ── Toast ── */
   .toast {
     position: fixed;
     bottom: 90px;
@@ -308,23 +253,10 @@
   .toast.success { background: var(--green-dim); border-color: var(--green); color: var(--green); }
   .toast.error { background: var(--red-dim); border-color: var(--red); color: var(--red); }
 
-  /* ── Empty state ── */
-  .empty {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text3);
-  }
+  .empty { text-align: center; padding: 48px 20px; color: var(--text3); }
   .empty-icon { font-size: 40px; margin-bottom: 12px; }
   .empty-text { font-size: 14px; }
-
-  .divider {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--text3);
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    margin: 16px 0 8px;
-  }
+  .divider { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: 0.06em; text-transform: uppercase; margin: 16px 0 8px; }
 </style>
 </head>
 <body>
@@ -343,7 +275,7 @@
   <div class="tab" onclick="switchTab('settings')" id="tab-settings">Settings</div>
 </div>
 
-<!-- ══ LOG TAB ══ -->
+<!-- LOG TAB -->
 <div class="form-body" id="pane-log">
 
   <div class="field">
@@ -390,7 +322,7 @@
   <div class="field">
     <label class="field-label">Bucket</label>
     <div class="divider">Quick pick</div>
-    <div class="quick-buckets" id="quick-buckets">
+    <div class="chips" id="quick-buckets">
       <div class="chip" data-val="Eating Out" onclick="selectBucket(this)">Eating Out</div>
       <div class="chip" data-val="Gas" onclick="selectBucket(this)">Gas</div>
       <div class="chip" data-val="Groceries" onclick="selectBucket(this)">Groceries</div>
@@ -477,40 +409,24 @@
   </div>
 
   <div class="field">
-    <label class="field-label">Notes <span style="color:var(--text3); font-weight:400; text-transform:none; letter-spacing:0;">(optional)</span></label>
+    <label class="field-label">Notes <span style="color:var(--text3);font-weight:400;text-transform:none;letter-spacing:0;">(optional)</span></label>
     <textarea id="f-notes" placeholder="Any details…"></textarea>
   </div>
 
 </div>
 
-<!-- ══ QUEUE TAB ══ -->
+<!-- QUEUE TAB -->
 <div class="form-body" id="pane-queue" style="display:none;">
   <div id="queue-list-container"></div>
 </div>
 
-<!-- ══ SETTINGS TAB ══ -->
+<!-- SETTINGS TAB -->
 <div class="form-body" id="pane-settings" style="display:none;">
-
   <div class="settings-section">
-    <span class="settings-label">Google Sheets setup</span>
-    <div class="settings-info">
-      This app queues transactions on your phone and syncs them to your Google Sheet via a Google Apps Script web app URL. It takes about 5 minutes to set up once.<br><br>
-      Steps:<br>
-      1. Open your Google Sheet<br>
-      2. Go to <strong>Extensions → Apps Script</strong><br>
-      3. Paste the script below and click <strong>Deploy → New deployment</strong><br>
-      4. Choose <strong>Web app</strong>, set access to <strong>Anyone</strong><br>
-      5. Copy the web app URL and paste it here
-    </div>
-    <button class="copy-btn" onclick="copyScript()">Copy Apps Script code</button>
-  </div>
-
-  <div class="settings-section" style="margin-top:16px;">
-    <span class="settings-label">Web App URL</span>
+    <span class="settings-label">Google Sheets web app URL</span>
     <input type="url" id="s-url" placeholder="https://script.google.com/macros/s/..." style="margin-bottom:8px;" oninput="saveSettings()">
-    <div class="settings-info" style="font-size:12px;">Paste your deployed Apps Script URL above. Transactions in the queue will POST to this URL and be inserted into your Transactions sheet.</div>
+    <div class="settings-info" style="font-size:12px;">Paste your deployed Apps Script URL here. Transactions sync directly to your Transactions sheet.</div>
   </div>
-
   <div class="settings-section">
     <span class="settings-label">Default account</span>
     <select id="s-default-account" onchange="saveSettings()">
@@ -525,48 +441,38 @@
       <option>Discover Credit Card</option>
     </select>
   </div>
-
   <div class="settings-section">
     <span class="settings-label">About</span>
-    <div class="settings-info">
-      Buckets Tracker v1.0<br>
-      Entries are stored locally until synced.<br>
-      No data leaves your device until you tap Sync.
-    </div>
+    <div class="settings-info">Buckets Tracker v2.0 — entries stored locally until synced. No data leaves your device until you tap Sync.</div>
   </div>
-
 </div>
 
-<!-- Submit bar (only shown on log tab) -->
 <div class="submit-bar" id="submit-bar">
-  <button class="submit-btn" id="submit-btn" onclick="submitEntry()">Add to queue</button>
+  <button class="submit-btn" onclick="submitEntry()">Add to queue</button>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
-// ── State ──────────────────────────────────────────────────────────
 let selectedType = '';
 let selectedBucket = '';
 let isNegative = true;
 let queue = JSON.parse(localStorage.getItem('buckets_queue') || '[]');
 let settings = JSON.parse(localStorage.getItem('buckets_settings') || '{}');
 
-// ── Init ───────────────────────────────────────────────────────────
 window.addEventListener('load', () => {
   const today = new Date();
   document.getElementById('f-date').value = today.toISOString().split('T')[0];
-  document.getElementById('today-label').textContent = today.toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
-
+  document.getElementById('today-label').textContent = today.toLocaleDateString('en-US', {weekday:'short',month:'short',day:'numeric'});
   if (settings.url) document.getElementById('s-url').value = settings.url;
-  if (settings.defaultAccount) document.getElementById('s-default-account').value = settings.defaultAccount;
-  if (settings.defaultAccount) document.getElementById('f-account').value = settings.defaultAccount;
-
+  if (settings.defaultAccount) {
+    document.getElementById('s-default-account').value = settings.defaultAccount;
+    document.getElementById('f-account').value = settings.defaultAccount;
+  }
   updateQueueBadge();
   selectTypeChip('Expense');
 });
 
-// ── Tab switching ──────────────────────────────────────────────────
 function switchTab(tab) {
   ['log','queue','settings'].forEach(t => {
     document.getElementById('pane-' + t).style.display = t === tab ? 'block' : 'none';
@@ -577,29 +483,18 @@ function switchTab(tab) {
   if (tab === 'settings') loadSettings();
 }
 
-// ── Type chips ─────────────────────────────────────────────────────
 function selectType(el) {
-  document.querySelectorAll('#type-chips .chip').forEach(c => {
-    c.classList.remove('selected','expense','income','transfer');
-  });
+  document.querySelectorAll('#type-chips .chip').forEach(c => c.classList.remove('selected','expense','income','transfer'));
   el.classList.add('selected');
   selectedType = el.dataset.val;
-
   const colorMap = {
-    'Expense': 'expense', 'Debt Purchase': 'expense',
-    'Income': 'income', 'Savings': 'income', 'Investment': 'income',
-    'Transfer': 'transfer', 'Debt Payment': 'transfer', 'Balance Correction': 'transfer'
+    'Expense':'expense','Debt Purchase':'expense',
+    'Income':'income','Savings':'income','Investment':'income',
+    'Transfer':'transfer','Debt Payment':'transfer','Balance Correction':'transfer'
   };
   if (colorMap[selectedType]) el.classList.add(colorMap[selectedType]);
-
-  // Auto-set sign direction
-  if (['Income'].includes(selectedType)) {
-    isNegative = false;
-    updateSignBtn();
-  } else if (['Expense','Debt Purchase'].includes(selectedType)) {
-    isNegative = true;
-    updateSignBtn();
-  }
+  if (['Income'].includes(selectedType)) { isNegative = false; updateSignBtn(); }
+  else if (['Expense','Debt Purchase'].includes(selectedType)) { isNegative = true; updateSignBtn(); }
 }
 
 function selectTypeChip(val) {
@@ -607,7 +502,6 @@ function selectTypeChip(val) {
   if (chip) selectType(chip);
 }
 
-// ── Bucket chips ───────────────────────────────────────────────────
 function selectBucket(el) {
   document.querySelectorAll('#quick-buckets .chip').forEach(c => c.classList.remove('selected'));
   el.classList.add('selected');
@@ -622,19 +516,13 @@ function syncBucketFromSelect(sel) {
   });
 }
 
-// ── Sign toggle ────────────────────────────────────────────────────
-function toggleSign() {
-  isNegative = !isNegative;
-  updateSignBtn();
-}
-
+function toggleSign() { isNegative = !isNegative; updateSignBtn(); }
 function updateSignBtn() {
   const btn = document.getElementById('sign-btn');
   btn.textContent = isNegative ? '−' : '+';
   btn.className = 'sign-btn ' + (isNegative ? 'negative' : 'positive');
 }
 
-// ── Submit ─────────────────────────────────────────────────────────
 function submitEntry() {
   const date = document.getElementById('f-date').value;
   const account = document.getElementById('f-account').value;
@@ -650,46 +538,28 @@ function submitEntry() {
   if (isNaN(amtRaw) || amtRaw <= 0) { showToast('Enter an amount', 'error'); return; }
 
   const amount = isNegative ? -Math.abs(amtRaw) : Math.abs(amtRaw);
-
-  const entry = {
-    id: Date.now(),
-    date,
-    type: selectedType,
-    account,
-    bucket,
-    payee,
-    amount,
-    notes,
-    synced: false
-  };
-
-  queue.push(entry);
+  queue.push({ id: Date.now(), date, type: selectedType, account, bucket, payee, amount, notes, synced: false });
   saveQueue();
   updateQueueBadge();
   showToast('Added to queue', 'success');
 
-  // Reset form
   document.getElementById('f-amount').value = '';
   document.getElementById('f-payee').value = '';
   document.getElementById('f-notes').value = '';
   document.querySelectorAll('#quick-buckets .chip').forEach(c => c.classList.remove('selected'));
   document.getElementById('f-bucket').value = '';
   selectedBucket = '';
-
-  // Reset date to today
   document.getElementById('f-date').value = new Date().toISOString().split('T')[0];
 }
 
-// ── Queue ──────────────────────────────────────────────────────────
 function renderQueue() {
   const container = document.getElementById('queue-list-container');
   if (queue.length === 0) {
-    container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No entries queued yet.<br>Log a transaction to get started.</div></div>`;
+    container.innerHTML = `<div class="empty"><div class="empty-icon">📭</div><div class="empty-text">No entries queued yet.</div></div>`;
     return;
   }
-
   const items = queue.slice().reverse().map(e => `
-    <div class="queue-item" id="qi-${e.id}">
+    <div class="queue-item">
       <div class="queue-item-info">
         <div class="queue-item-top">
           <span class="queue-item-payee">${e.payee || e.bucket}</span>
@@ -701,51 +571,29 @@ function renderQueue() {
     </div>
   `).join('');
 
-  const total = queue.filter(e => !e.synced).length;
+  const unsynced = queue.filter(e => !e.synced).length;
   container.innerHTML = `
     <div class="queue-list">${items}</div>
-    ${total > 0 ? `
     <div class="queue-actions">
-      <button class="btn-sync" onclick="syncQueue()">Sync ${total} to Sheets</button>
-      <button class="btn-clear" onclick="clearSynced()">Clear synced</button>
-    </div>` : `
-    <div class="queue-actions">
-      <button class="btn-clear" style="flex:1;" onclick="clearAll()">Clear all</button>
-    </div>`}
+      ${unsynced > 0 ? `<button class="btn-sync" onclick="syncQueue()">Sync ${unsynced} to Sheets</button>` : ''}
+      <button class="btn-clear" onclick="clearAll()">Clear all</button>
+    </div>
   `;
 }
 
 function deleteEntry(id) {
   queue = queue.filter(e => e.id !== id);
-  saveQueue();
-  updateQueueBadge();
-  renderQueue();
-}
-
-function clearSynced() {
-  queue = queue.filter(e => !e.synced);
-  saveQueue();
-  updateQueueBadge();
-  renderQueue();
+  saveQueue(); updateQueueBadge(); renderQueue();
 }
 
 function clearAll() {
-  if (confirm('Clear all entries?')) {
-    queue = [];
-    saveQueue();
-    updateQueueBadge();
-    renderQueue();
-  }
+  if (confirm('Clear all entries?')) { queue = []; saveQueue(); updateQueueBadge(); renderQueue(); }
 }
 
-// ── Sync to Google Sheets ──────────────────────────────────────────
+// ── KEY CHANGE: use GET with URL params instead of POST to avoid CORS ──
 async function syncQueue() {
   const url = settings.url;
-  if (!url) {
-    showToast('Add your Apps Script URL in Settings', 'error');
-    switchTab('settings');
-    return;
-  }
+  if (!url) { showToast('Add your Apps Script URL in Settings', 'error'); switchTab('settings'); return; }
 
   const unsynced = queue.filter(e => !e.synced);
   if (unsynced.length === 0) { showToast('Nothing to sync', ''); return; }
@@ -757,38 +605,45 @@ async function syncQueue() {
 
   for (const entry of unsynced) {
     try {
-      await fetch(url, {
-        method: 'POST',
-        mode: 'no-cors',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          date: entry.date,
-          account: entry.account,
-          type: entry.type,
-          bucket: entry.bucket,
-          payee: entry.payee,
-          amount: entry.amount,
-          notes: entry.notes
-        })
+      const params = new URLSearchParams({
+        date: entry.date,
+        account: entry.account,
+        type: entry.type,
+        bucket: entry.bucket,
+        payee: entry.payee || '',
+        amount: entry.amount,
+        notes: entry.notes || ''
       });
-      entry.synced = true;
-      success++;
-    } catch(e) {
+
+      const response = await fetch(url + '?' + params.toString(), {
+        method: 'GET',
+        redirect: 'follow'
+      });
+
+      const text = await response.text();
+      let result;
+      try { result = JSON.parse(text); } catch(e) { result = { status: 'ok' }; }
+
+      if (result.status === 'ok' || response.ok) {
+        entry.synced = true;
+        success++;
+      } else {
+        failed++;
+      }
+    } catch(err) {
+      console.error(err);
       failed++;
     }
   }
 
   saveQueue();
   renderQueue();
+  updateQueueBadge();
 
-  if (failed === 0) {
-    showToast(`Synced ${success} entries`, 'success');
-  } else {
-    showToast(`${success} synced, ${failed} failed`, 'error');
-  }
+  if (failed === 0) showToast(`Synced ${success} ✓`, 'success');
+  else showToast(`${success} synced, ${failed} failed`, 'error');
 }
 
-// ── Settings ───────────────────────────────────────────────────────
 function saveSettings() {
   settings.url = document.getElementById('s-url').value.trim();
   settings.defaultAccount = document.getElementById('s-default-account').value;
@@ -800,65 +655,13 @@ function loadSettings() {
   if (settings.defaultAccount) document.getElementById('s-default-account').value = settings.defaultAccount;
 }
 
-// ── Apps Script code ───────────────────────────────────────────────
-function copyScript() {
-  const script = `function doPost(e) {
-  try {
-    const data = JSON.parse(e.postData.contents);
-    const ss = SpreadsheetApp.getActiveSpreadsheet();
-    const sheet = ss.getSheetByName('Transactions');
-    
-    const date = new Date(data.date + 'T12:00:00');
-    
-    // Insert at row 3 (top of data, below headers)
-    sheet.insertRowBefore(3);
-    sheet.getRange(3, 1).setValue(date);
-    sheet.getRange(3, 1).setNumberFormat('MM/DD/YYYY');
-    // Col B (Year) and C (Month) are array formulas - leave blank
-    sheet.getRange(3, 4).setValue(data.account);
-    sheet.getRange(3, 5).setValue(data.type);
-    sheet.getRange(3, 6).setValue(data.bucket);
-    sheet.getRange(3, 7).setValue(data.payee);
-    sheet.getRange(3, 8).setValue(data.amount);
-    sheet.getRange(3, 9).setValue(data.notes);
-    
-    return ContentService
-      .createTextOutput(JSON.stringify({status:'ok'}))
-      .setMimeType(ContentService.MimeType.JSON);
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({status:'error', message:err.toString()}))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-function doGet(e) {
-  return ContentService
-    .createTextOutput(JSON.stringify({status:'ok', message:'Buckets Tracker connected'}))
-    .setMimeType(ContentService.MimeType.JSON);
-}`;
-
-  navigator.clipboard.writeText(script).then(() => {
-    showToast('Script copied!', 'success');
-  }).catch(() => {
-    showToast('Copy failed — try long-pressing', 'error');
-  });
-}
-
-// ── Helpers ────────────────────────────────────────────────────────
-function saveQueue() {
-  localStorage.setItem('buckets_queue', JSON.stringify(queue));
-}
+function saveQueue() { localStorage.setItem('buckets_queue', JSON.stringify(queue)); }
 
 function updateQueueBadge() {
   const unsynced = queue.filter(e => !e.synced).length;
   const badge = document.getElementById('queue-badge');
-  if (unsynced > 0) {
-    badge.textContent = `${unsynced} pending`;
-    badge.classList.add('show');
-  } else {
-    badge.classList.remove('show');
-  }
+  if (unsynced > 0) { badge.textContent = `${unsynced} pending`; badge.classList.add('show'); }
+  else { badge.classList.remove('show'); }
 }
 
 function showToast(msg, type = '') {
